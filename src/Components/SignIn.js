@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
  import {Box,Grid,TextField,Card,CardContent,Button,Typography} from '@mui/material/';
 
-import axios from 'axios'
+import axios from '../AxiosConfig/AxiosConfig'
 
 
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,7 @@ function SignIn() {
 
         console.log(state)
    
-        axios.post('http://localhost:8800/api/auth/login',state)
+        axios.post('/auth/login',state)
         .then(response=>{
          localStorage.setItem('user',JSON.stringify(response.data.details))
          navigate('/profile')

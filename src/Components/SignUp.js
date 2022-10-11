@@ -3,7 +3,7 @@ import React,{useState,useEffect} from 'react'
 
  import { useNavigate } from "react-router-dom";
 
-import axios from 'axios'
+import axios from '../AxiosConfig/AxiosConfig'
 
 
 
@@ -33,7 +33,7 @@ function SignUp() {
 
        const OnSUbmitdata = () =>{
 
-        axios.post('http://localhost:8800/api/auth/register',state)
+        axios.post('/auth/register',state)
         .then(response=>{
             navigate('/')
         })
