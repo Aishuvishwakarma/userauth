@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import {Box,Grid,TextField,Card,CardContent,Button,Typography} from '@mui/material/';
 import { useNavigate } from "react-router-dom";
 
-import axios from 'axios'
+import axios from '../AxiosConfig/AxiosConfig'
 
 
 function Profile() {
@@ -14,7 +14,6 @@ function Profile() {
     const [state,setState] = useState({
       username:'',
       email:'',
-      password:'',
   })
 
     const [user,setUser] = useState({})
@@ -23,7 +22,9 @@ function Profile() {
         if(!localStorage.getItem('user')){
             navigate('/')
         }else{
-          setUser(JSON.parse(localStorage.getItem('user')))
+          let data = JSON.parse(localStorage.getItem('user'))
+          setUser(data)
+          setState({username:data.username, email:data.email})
         }
     },[])
 
@@ -37,15 +38,25 @@ function Profile() {
 
 
   const OnSUbmitdata = () =>{
-    setEdit(true)
 
-  // axios.post('http://localhost:8800/api/auth/register',state)
-  // .then(response=>{
-  //     navigate('/')
-  // })
-  // .catch(err=>console.log(err))
-
+    if(edit){
+      console.log(user._id)
+      axios.put(`/users/${user._id}`,state)
+          .then(response=>{
+            localStorage.removeItem('user')
+            localStorage.setItem('user',JSON.stringify(response.data.user))
+             setUser(response.data.user)
+              setEdit(false)
+          })
+          .catch(err=>console.log(err))
+    }else{
+      setEdit(true)
     }
+
+   }
+
+
+
 
 console.log(user)
 
@@ -67,6 +78,7 @@ console.log(user)
                         id="standard-textarea"
                         label="Username"
                         name="username"
+                        value={state.username}
                         onChange={(e)=>OnChangeHandler(e)}
                         placeholder="Username"
                         multiline
@@ -80,7 +92,6 @@ console.log(user)
                         label="Username"
                         name="username"
                         value={user.username}
-                        onChange={(e)=>OnChangeHandler(e)}
                         placeholder="Username"
                         disabled
                         multiline
@@ -94,6 +105,7 @@ console.log(user)
                         id="standard-textarea"
                         label="email"
                         placeholder="email"
+                        value={state.email}
                         name="email"
                         onChange={(e)=>OnChangeHandler(e)}
                         multiline
@@ -107,7 +119,6 @@ console.log(user)
                         placeholder="email"
                         name="email"
                         value={user.email}
-                        onChange={(e)=>OnChangeHandler(e)}
                         multiline
                         variant="standard"
                         disabled
@@ -116,7 +127,9 @@ console.log(user)
                   }
 
                    
-                  <Button variant="contained" onClick={OnSUbmitdata} >Edit</Button>
+                  <Button variant="contained" onClick={OnSUbmitdata} >
+                    {edit? 'update' : 'edit' }
+                  </Button>
 
                 </CardContent>
 
